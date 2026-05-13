@@ -1,9 +1,34 @@
-class Product:
-    def __init__(self,name,price,category):
+feom abc import ABC, abstractmethod
+
+class Product(ABC):
+    def __init__(self,name,price):
         self.name=name
         self.price=price
-        self.category=category
+    @property
+    @abstractmethod
+    def category(self):
+        pass
 
+class Electronic(Product):
+    @property
+    def category(self):
+        return 'electronic'
+
+class Clothing(Product):
+    @property
+    def category(self):
+        return 'clothing'
+
+class ProductFactory:
+    @staticmethod
+    def crate_product(product_type, name, price):
+        if product_type == 'electronic':
+            return Electronic(name,price)
+        elif product_type == 'clothing':
+            return Clothing(name,price)
+        else:
+            raise ValueError(f"Bilinmeyen Ürün Tipi: {product_type}")
+        
 class User:
     def __init__(self,username,is_vip):
         self.username=username
