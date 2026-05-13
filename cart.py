@@ -1,4 +1,4 @@
-feom abc import ABC, abstractmethod
+from abc import ABC, abstractmethod
 
 class Product(ABC):
     def __init__(self,name,price):
@@ -28,7 +28,7 @@ class ProductFactory:
             return Clothing(name,price)
         else:
             raise ValueError(f"Bilinmeyen Ürün Tipi: {product_type}")
-        
+
 class User:
     def __init__(self,username,is_vip):
         self.username=username
