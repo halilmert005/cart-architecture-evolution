@@ -1,4 +1,40 @@
 from abc import ABC, abstractmethod
+class DiscountStrategy(ABC):
+    @abstractmethod
+    def apply_discount(self,total):
+        pass
+
+class FixedDiscountStrategy(DiscountStrategy):
+    @abstractmethod
+    def __init__(self,discount_amount):
+        self.discount_amount=discount_amount
+
+    def apply_discount(self,total):
+        return total-self.discount_amount
+
+class PercentageDiscountStrategy(DiscountStrategy):
+    def __init__(self,percentage):
+        self.percentage=percentage
+
+    def apply_discount(self,total):
+        return total*(1-(self.percentage/100))
+
+class VipGiftStrategy(DiscountStrategy):
+    def apply_discount(self,total):
+        return total*0.65
+
+class CartObserver(ABC):
+    @abstractmethod
+    def update(self, message):
+        pass
+
+class EmailNotifier(CartObserver):
+    def update(self, message):
+        print(f"[SİSTEM BİLDİRİMİ-EMAIL]: {message}")
+
+class ConsoleLogger(CartObserver):
+    def update(self, message):
+        print(f"[SİSTEM LOGU]: {message}")
 
 class Product(ABC):
     def __init__(self,name,price):
@@ -74,11 +110,20 @@ class ShoppingCart:
     def __init__(self,user):
         self.user=user
         self.products=[]
+        self._observers=[]
+
+    def attach_observer(self,observer):
+        self._observers.append(observer)
+
+    def notify_observers(self,message):
+        for observer in self._observers:
+            observer.update(message)
 
     def add_item(self, product):
         self.products.append(product)
+        self.notify_observers(f"Seperte yeni ürün eklendi:{product.name}  {product.price} TL")
 
-    def calculate_total_price(self, discount_code=None):
+    def calculate_total_price(self, discount_strategy=None):
         total=0
         shipping_cost=50
         for product in self.products:
@@ -97,18 +142,20 @@ class ShoppingCart:
 
         total+= shipping_cost
 
-        if discount_code=='BAHAR40':
-            total=total-40
-        elif discount_code=='YUZDE15':
-            total=total*0.85
-        elif discount_code=='VIPGIFT' and self.user.is_vip:
-            total=total*0.65
+        if discount_strategy:
+            total=discount_strategy.apply_discount(total)
 
         return total
 
 if __name__== '__main__':
     user1=User('user1',True)
     cart=ShoppingCart(user1)
+
+    email_notifier = EmailNotifier()
+    logger = ConsoleLogger()
+    cart.attach_observer(email_notifier)
+    cart.attach_observer(logger)
+
     laptop = ProductFactory.create_product("electronic", "Laptop", 20000)
     tshirt = ProductFactory.create_product("clothing", "T-shirt", 400)
     gift_wrapped_tshirt=GiftWrapDecorator(tshirt)
@@ -123,4 +170,5 @@ if __name__== '__main__':
     for product in cart.products:
         print(f"{product.name}: {product.price} TL")
 
-    print(f"Tutar: {cart.calculate_total_price('YUZDE15')}")
+    yuzde15_indirim=PercentageDiscountStrategy(15)
+    print(f"Tutar: {cart.calculate_total_price(yuzde15_indirim)} TL")
