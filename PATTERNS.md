@@ -13,3 +13,13 @@
 - **Kullanılan Yer:** ShippingAdapter sınıfında.
 - **Kullanılma Amacı:** Sistemi dolar bazlı çalışan, müdahale edemediğimiz ExternalShippingAPI ile uyumlu hale getirmek için.
 - **Kazançlar:** Dış sistem bağımlılığı izole edildi. API değişse bile ana kodumuz bu değişimden etkilenmeyecek hale getirildi.
+
+## 4. Strategy - [Faz 3]
+- **Kullanılan Yer:** DiscountStrategy arayüzü ve alt strateji sınıflarında.
+- **Kullanılma Amacı:** İndirim hesaplama mantığındaki spagetti if-elif zincirlerini yok etmek için.
+- **Kazançlar:** İndirim kuralları sepet nesnesinden koparıldı. Sisteme yeni bir kampanya eklendiğinde sadece yeni bir strateji sınıfı yazmak yeterli olacak, ana sepet kodu asla değişmeyecek.
+
+## 5. Observer - [Faz 3]
+- **Kullanılan Yer:** ShoppingCart sınıfı ile CartObserver arayüzleri arasında.
+- **Kullanılma Amacı:** Sepete ürün eklendiğinde, bildirim gönderme veya loglama sistemlerini sepet kodunun içine sıkı bağlılık yaratmamak için.
+- **Kazançlar:** Mesaj gönderici sistem eklemek istersek, sadece yeni bir observer sınıfı yazıp sepete bağlamamız yeterli olacak. Sepet kodu hiç değişmeyecek.
