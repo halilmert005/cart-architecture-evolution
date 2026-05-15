@@ -1,0 +1,6 @@
+## Faz 2: Yapay Zeka Soru Cevap
+
+- **Prompt:** Sepetteki bazı ürünlere dinamik olarak hediye paketi özelliği eklemek istiyorum. Ayrıca dışarıdan aldığım bir dolar kargo API'sini sistemime entegre etmem lazım. Bu iki durum için hangi örüntüyü kullanmalıyım? Farkını açıkla.
+- **Yapay Zeka Yanıtı:** Yapay zeka, dış kargo API'si için Adapter kullanmamı doğru bir şekilde önerdi. Ancak hediye paketi özelliği için bana Facade örüntüsünü kullanmamı tavsiye etti. Gerekçe olarak da "Facade ile tüm hediye paketi ekleme işlemlerini tek bir alt sınıfta toplayıp karmaşıklığı gizlersin" dedi.
+- **Yapay Zekanın Düzeltilmesi (Kritik Hata Tespiti):** Yapay zeka hediye paketi konusunda yanılıyor. Facade örüntüsü, karmaşık alt sistemleri tek bir arayüz arkasına gizlemek için kullanılır, nesnelere dinamik özellik eklemek için değil. Eğer ürünlere çalışma zamanında yeni bir davranış ekleyeceksem, doğru yapısal örüntü kesinlikle Decorator olmalıdır. Facade kullanmak nesne yapısını hantallaştırır ve açık/kapalı prensibini ihlal eder.
+- **Sonuç:** Dış kargo sistemi entegrasyonu için yapay zekanın Adapter önerisini uyguladım. Ancak nesne özellikleri için Facade önerisini kabul etmedim. Kendi kararımla Decorator örüntüsünü uyguladım.

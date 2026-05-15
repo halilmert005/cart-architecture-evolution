@@ -21,13 +21,49 @@ class Clothing(Product):
 
 class ProductFactory:
     @staticmethod
-    def crate_product(product_type, name, price):
+    def create_product(product_type, name, price):
         if product_type == 'electronic':
             return Electronic(name,price)
         elif product_type == 'clothing':
             return Clothing(name,price)
         else:
             raise ValueError(f"Bilinmeyen Ürün Tipi: {product_type}")
+
+class ExternalShippingAPI:
+    def get_shipping_cost_in_usd(self, weight):
+        return weight*2.5
+
+class ShippingAdapter:
+    def __init__(self, external_api):
+        self.external_api=external_api
+        self.usd_to_try_rate=44.0
+
+    def calculate_shipping(self, weight):
+        usd_cost=self.external_api.get_shipping_cost_in_usd(weight)
+        return usd_cost*self.usd_to_try_rate
+
+class ProductDecorator(Product):
+    def __init__(self, product):
+        self.product=product
+
+    @property
+    def name(self):
+        return self.product.name
+    @property
+    def price(self):
+        return self.product.price
+    @property
+    def category(self):
+        return self.product.category
+
+class GiftWrapDecorator(ProductDecorator):
+    @property
+    def name(self):
+        return f"{self.product.name} (Hediye Paketi)"
+
+    @property
+    def price(self):
+        return self.product.price +50
 
 class User:
     def __init__(self,username,is_vip):
@@ -73,8 +109,18 @@ class ShoppingCart:
 if __name__== '__main__':
     user1=User('user1',True)
     cart=ShoppingCart(user1)
-    cart.add_item(Product("Laptop", 20000, "electronic"))
-    cart.add_item(Product("T-shirt", 400, "clothing"))
-    cart.add_item(Product("Mouse", 5000, "electronic"))
+    laptop = ProductFactory.create_product("electronic", "Laptop", 20000)
+    tshirt = ProductFactory.create_product("clothing", "T-shirt", 400)
+    gift_wrapped_tshirt=GiftWrapDecorator(tshirt)
+    cart.add_item(laptop)
+    cart.add_item(gift_wrapped_tshirt)
+
+    external_api=ExternalShippingAPI()
+    shipping_adapter=ShippingAdapter(external_api)
+    print(f"Gelen Kargo Bedeli(TRY): {shipping_adapter.calculate_shipping(2)} TL")
+
+    print(f"Sepetteki Ürünler: ")
+    for product in cart.products:
+        print(f"{product.name}: {product.price} TL")
 
     print(f"Tutar: {cart.calculate_total_price('YUZDE15')}")
