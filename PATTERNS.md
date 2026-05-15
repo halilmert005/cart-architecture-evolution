@@ -1,4 +1,4 @@
-# Uygulanan Tasrım Örüntüleri
+# Uygulanan Tasarım Örüntüleri
 ## 1) Facroty Method - [Faz 1]
 - **Kullanılan Yer:** Product sınıfı ve product alt sınıfları.
 - **Kullanılma Amacı:** Ürün yaratma mantığını main bloğundan ve ShoppingCart sınıfından ayırmak için.
